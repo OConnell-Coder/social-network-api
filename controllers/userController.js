@@ -10,6 +10,16 @@ const userController = {
 
     getUsers(req, res){
         User.find().then((data) => res.json(data));
+    },
+
+    getOneUser(req, res){
+        User.findOne({_id: req.params.userId})
+        .then((user) =>
+        !user
+          ? res.status(404).json({ message: 'No user found with that ID.' })
+          : res.json(user)
+      )
+      .catch((err) => res.status(500).json(err));
     }
 };
 
