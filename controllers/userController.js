@@ -22,11 +22,10 @@ const userController = {
       .catch((err) => res.status(500).json(err));
     },
 
-    //not updating, need to fix!
     updateUser(req, res){
         User.findOneAndUpdate(
             { _id: req.params.userId },
-            { $set: {email: req.params.email} },
+            { $set: {email: req.body.email} },
             { new: true }
         )
         .then((user) =>
