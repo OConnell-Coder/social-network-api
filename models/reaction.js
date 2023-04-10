@@ -16,11 +16,22 @@ const reactionSchema = new Schema(
             type: String,
             required: true,
         },
-        timestamps: true, //need to change?
+        createdAt: {
+            type: Date,
+            default: Date.now,
+            get: (date) => {
+                const timestamp = new Intl.DateTimeFormat("en", {
+                    timeStyle: "short",
+                    dateStyle: "medium"
+                }).format(date);
+                return timestamp;
+            }
+        },
     },
     {
         toJSON: {
-            virtuals: true
+            virtuals: true,
+            getters: true
         },
         id: false
     }
