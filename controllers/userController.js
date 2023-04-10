@@ -18,8 +18,23 @@ const userController = {
         !user
           ? res.status(404).json({ message: 'No user found with that ID.' })
           : res.json(user)
-      )
+        )
       .catch((err) => res.status(500).json(err));
+    },
+
+    //not updating, need to fix!
+    updateUser(req, res){
+        User.findOneAndUpdate(
+            { _id: req.params.userId },
+            { $set: {email: req.params.email} },
+            { new: true }
+        )
+        .then((user) =>
+            !user
+             ? res.status(404).json({ message: 'No user found with that ID.' })
+             : res.json(user)
+            )
+        .catch((err) => res.status(500).json(err));
     }
 };
 
