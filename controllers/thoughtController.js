@@ -1,3 +1,4 @@
+const { ObjectId } = require('mongoose').Types;
 const {Thought, User} = require('../models');
 
 const thoughtController = {
@@ -58,6 +59,38 @@ const thoughtController = {
             : res.status(200).json({ message: `Thought #${req.params.thoughtId} was deleted.`})
         )
         .catch((err) => res.status(500).json(err));
+    },
+
+    addReaction(req, res){
+        Thought.findOneAndUpdate(
+            { _id: ObjectId(req.params.thoughtId) },
+            { $addToSet: {reactions: {
+                            reactionBody: req.body.reactionBody,
+                            username: req.body.username
+                        }}
+            },
+            { new: true }
+        )
+        .then((reaction) =>
+        !reaction
+           ? res.status(404).json({ message: 'No thought found with that ID. Reaction not recorded.' })
+           : res.status(200).json({ message: `Your reaction was recorded.`})
+       )
+       .catch((err) => res.status(500).json(err));
+    },
+
+    removeReaction(req, res){
+        Thought.findOneAndUpdate(
+            { _id: ObjectId(req.params.thoughtId) },
+            { $pull: {reactions: { _id: req.params.reactionId } } },
+            { new: true }
+        )
+        .then((reaction) =>
+        !reaction
+           ? res.status(404).json({ message: 'No reaction found with that ID.' })
+           : res.status(200).json({ message: `Reaction #${req.params.reactionId} was removed.`})
+       )
+       .catch((err) => res.status(500).json(err));
     }
 };
 
